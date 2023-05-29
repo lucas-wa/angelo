@@ -8,7 +8,7 @@ from pyngrok import ngrok
 from flask_cors import CORS
 
 
-# os.environ["FLASK_DEBUG"] = "True"
+# os.environ["FLASK_ENV"] = "development"
 
 app = Flask(__name__)
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
@@ -44,10 +44,10 @@ def generator():
 #       img_str = base64.b64encode(buffered.getvalue())
 #       b = "data:image/png;base64," + str(img_str)[2:-1]
 
-    return jsonify({"ok": prompt})
+    return jsonify({"prompt": prompt})
 
 # # Start the Flask server in a new thread
 # threading.Thread(target=app.run, kwargs={"use_reloader": False}).start()
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
