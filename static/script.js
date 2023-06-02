@@ -16,10 +16,10 @@ document.querySelector("form")
                 body: JSON.stringify({
                     'prompt': prompt
                 })
-            }).json()
+            })
 
 
-            const { data } = response;
+            const data = await response.json();
 
             document.querySelector("img").src = data.image_raw;
             document.querySelector("button").innerHTML = "Request"
