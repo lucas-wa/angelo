@@ -6,7 +6,7 @@ document.querySelector("form")
 
         try {
 
-            const prompt = document.querySlector("input").value
+            const prompt = document.querySelector("input").value
 
             const response = await fetch('/', {
                 headers: {
