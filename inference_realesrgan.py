@@ -33,11 +33,10 @@ def detect_face(image):
   return True if len(faces) > 0 else False
 
 
-def main():
-
+def upscale_image(image_path):
 
     parser = argparse.ArgumentParser()
-    INPUT_PATH = 'images/'
+    INPUT_PATH = image_path
     OUTPUT_PATH = 'results'
     OUTSCALE = 4
     IMG_SUFFIX = 'out'
@@ -118,7 +117,3 @@ def main():
 
             save_path = os.path.join(OUTPUT_PATH, f'{imgname}_{IMG_SUFFIX}.{extension}')
             cv2.imwrite(save_path, output)
-
-
-if __name__ == '__main__':
-    main()
