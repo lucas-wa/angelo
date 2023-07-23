@@ -151,6 +151,15 @@ button:hover {}
   align-items: center;
 }
 
+.toolBar{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap:5rem;
+}
+
+
 
 .slide-in {
   animation: slide-in 1s ease;
