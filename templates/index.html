@@ -20,46 +20,100 @@
         <header>
             <nav>
                 <ul>
-                    <li id="generatorLink">Gerador</li>
-                    <li id="upscaleLink">Upscale</li>
+                    <li class="generateContainer">Gerador</li>
+                    <li class="upscaleContainer">Upscale</li>
+                    <li class="editorContainer">Editor</li>
                 </ul>
             </nav>
         </header>
 
         <main>
 
-            <h1>Gerador de Imagens</h1>
+            <div id="generateContainer" class="formContainer">
+                <h1>Gerador de Imagens</h1>
 
-            <figure class="">
-                <img src="https://picsum.photos/512/512" />
-            </figure>
+                <figure class="figure">
+                    <img />
+                </figure>
 
-            <form action="POST">
+                <form action="POST" id="generateForm">
 
-                <input type="text" id="inputPrompt" placeholder="Digite a descrição da imagem">
+                    <input type="text" id="inputPrompt" placeholder="Digite a descrição da imagem">
 
-                <label for="inputFile" id="customFileInput" class="sr-only">
-                    <span class="material-symbols-outlined" style="font-size:5vw; color:#80808090;">
-                        upload
-                    </span>
-                    <p>
-                        Faça o upload da imagem
-                    </p>
-                </label>
+                    <button type="submit">
+                        Enviar
+                    </button>
+                </form>
+            </div>
 
-                <input type="file" id="inputFile" name="inputFile" accept="image/png, image/jpeg" class="sr-only">
+            <div id="upscaleContainer" class="formContainer sr-only">
+                <h1>Upscale de Imagens</h1>
 
-                <button type="submit">
-                    Enviar
-                </button>
+                <figure class="figure">
+                    <img />
+                </figure>
 
-            </form>
+                <form action="POST" id="upscaleForm">
+
+                    <label for="inputUpscaleFile" class="customFileInput">
+                        <span class="material-symbols-outlined" style="font-size:5vw; color:#80808090;">
+                            upload
+                        </span>
+                        <p>
+                            Faça o upload da imagem
+                        </p>
+                    </label>
+
+                    <input type="file" id="inputUpscaleFile" name="inputFile" accept="image/png, image/jpeg"
+                        class="sr-only">
+
+                    <button type="submit">
+                        Enviar
+                    </button>
+                </form>
+            </div>
+
+            <div id="editorContainer" class="formContainer sr-only">
+                <h1>Editor de Imagens</h1>
+
+                <div class="toolBar">
+                    <input type="range" id="rangeInput" min="10" max="40">
+                </div>
+
+                <div id="canvas-wrapper" class="figure">
+                    <canvas>
+
+                    </canvas>
+                </div>
+
+                <form action="POST" id="editorForm">
+
+                    <input type="text" id="inputPrompt" placeholder="Digite a descrição da edição da área selecionada">
+
+                    <label for="inputEditorFile" class="customFileInput">
+                        <span class="material-symbols-outlined" style="font-size:5vw; color:#80808090;">
+                            upload
+                        </span>
+                        <p>
+                            Faça o upload da imagem
+                        </p>
+                    </label>
+
+                    <input type="file" id="inputEditorFile" name="inputFile" accept="image/png, image/jpeg"
+                        class="sr-only">
+
+                    <button type="submit">
+                        Enviar
+                    </button>
+                </form>
+            </div>
 
     </div>
     </main>
 
 
     <script src="../static/script.js" defer></script>
+    <script src="../static/toolBar.js" defer></script>
 
 </body>
 

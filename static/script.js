@@ -1,169 +1,132 @@
-let formState = "generatorLink";
+let formState = "generateContainer";
 
-document.querySelector("form")
+document.querySelector("#generateForm")
   .addEventListener("submit", async e => {
-    e.preventDefault()
 
-    console.log(formState)
+    const submitButton = document.querySelector("#generateForm button")
+    submitButton.disable = true;
+    submitButton.innerHTML = "<div class='lds-ring'><div></div><div></div><div></div><div></div></div>"
 
-    document.querySelector("button").innerHTML = "<div class='lds-ring'><div></div><div></div><div></div><div></div></div>"
 
-    if (formState == "generatorLink") {
+    try {
 
-      try {
+      const prompt = document.querySelector("#inputPrompt").value
 
-        const prompt = document.querySelector("#inputPrompt").value
+      const response = await fetch('/generator', {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          'prompt': prompt,
+          "service": "generator"
+        })
+      })
 
-        const response = await fetch('/generator', {
+      if (response.ok) {
+        const data = await response.json();
+        document.querySelector("img").src = data.image_raw;
+      }
+
+    } catch (error) {
+      console.log(error)
+    }
+
+    submitButton.disable = false;
+    submitButton.innerHTML = "Enviar"
+  });
+
+document.querySelector("#upscaleForm")
+  .addEventListener("submit", async e => {
+
+
+    try {
+
+      const input = document.querySelector("#inputUpscaleFile");
+      const file = input['files'][0]
+      let reader = new FileReader();
+
+      reader.readAsDataURL(file);
+
+      reader.onload = async function () {
+
+        const base64Image = reader.result.split(',')[1];
+
+        const submitButton = document.querySelector("#upscaleForm button")
+        submitButton.disable = true;
+        submitButton.innerHTML = "<div class='lds-ring'><div></div><div></div><div></div><div></div></div>"
+
+
+        const response = await fetch('/upscale', {
           headers: {
             'Content-Type': 'application/json'
           },
           method: 'POST',
           body: JSON.stringify({
-            'prompt': prompt,
-            "service": "generator"
+            "file": base64Image,
+            "service": "upscale"
           })
         })
 
         if (response.ok) {
           const data = await response.json();
-          document.querySelector("img").src = data.image_raw;
-        }
 
-        document.querySelector("button").innerHTML = "Enviar"
-      } catch (error) {
-        console.log(error)
-      }
+          const virtualImg = new Image();
 
-    }
+          virtualImg.src = data.image_raw;
 
-    else if (formState == "upscaleLink") {
-
-      try {
-
-        const input = document.querySelector("#inputFile");
-        const file = input['files'][0]
-        let reader = new FileReader();
-        let base64Image = "";
-
-        reader.readAsDataURL(file);
-
-        reader.onload = async function () {
-          base64Image = reader.result.split(',')[1];
-
-          const response = await fetch('/upscale', {
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            method: 'POST',
-            body: JSON.stringify({
-              "file": base64Image,
-              "service": "upscale"
-            })
-          })
-
-          if (response.ok) {
-            const data = await response.json();
-
-            const img = document.querySelector("main figure img");
-            img.src = ""
-
-            const figure = document.querySelector("main figure")
-            figure.classList.remove("sr-only");
-            img.src = data.image_raw;
+          virtualImg.onload = () => {
+            makeFigureResponsive(virtualImg)
           }
-          document.querySelector("button").innerHTML = "Enviar"
 
         }
 
+        submitButton.disable = false;
+        submitButton.innerHTML = "Enviar"
 
-        console.log(base64Image)
-
-
-
-
-      } catch (error) {
-        console.log(error)
       }
-    }
-  })
 
+    } catch (error) {
+      console.log(error)
+    }
+  });
 
 document.querySelectorAll("header nav ul li")
   .forEach(li => {
     console.log(li)
     li.addEventListener("mousedown", e => {
-      const state = e.target.id;
+      const state = e.target.classList[0];
 
-      if (state != formState) handleFormState(state);
+      console.log(state);
+
+      if (state != formState) handleFormState(formState, state);
     })
   })
 
-function handleFormState(state) {
+function handleFormState(prevState, state) {
+
+  formState = state;
+  const prevStateForm = document.querySelector(`#${prevState}`);
+  const stateForm = document.querySelector(`#${state}`);
+
+  prevStateForm.classList.add("slide-out");
 
 
-  const inputFile = document.querySelector("#inputFile");
-  inputFile.value = '';
-  const p = document.querySelector("#customFileInput p");
-  p.innerHTML = "Faça o upload da imagem";
-
-  const fileInput = document.querySelector("#customFileInput");
-  const inputPrompt = document.querySelector("#inputPrompt");
-  inputPrompt.value = ""
-  const h1 = document.querySelector("main h1");
-  const figure = document.querySelector("main figure");
-
-  if (state == "generatorLink") {
-    formState = "generatorLink"
-    fileInput.classList.add("slide-out")
-
-    h1.innerHTML = "Gerador de Imagens"
+  setTimeout(() => {
+    prevStateForm.classList.add("sr-only");
+    prevStateForm.classList.remove("slide-out");
 
     setTimeout(() => {
-      inputPrompt.classList.add("slide-in");
-      figure.classList.add("slide-in");
-      figure.classList.remove("sr-only")
-      inputPrompt.classList.remove("sr-only");
-
-      setTimeout(() => {
-        inputPrompt.classList.remove("slide-in");
-        figure.classList.remove("slide-in");
-      }, 1000)
-
-      fileInput.classList.add("sr-only");
-      fileInput.classList.remove("slide-out");
+      stateForm.classList.remove("slide-in");
     }, 1000)
 
-  }
-
-  if (state == "upscaleLink") {
-    formState = "upscaleLink"
-    inputPrompt.classList.add("slide-out")
-    figure.classList.add("slide-out")
-
-
-    h1.innerHTML = "Upscale de Imagens"
-
-    setTimeout(() => {
-      fileInput.classList.add("slide-in");
-      fileInput.classList.remove("sr-only");
-
-      setTimeout(() => {
-        fileInput.classList.remove("slide-in");
-      }, 1000)
-
-      inputPrompt.classList.add("sr-only");
-      figure.classList.add("sr-only");
-      inputPrompt.classList.remove("slide-out");
-      figure.classList.remove("slide-out");
-    }, 1000)
-  }
-
+    stateForm.classList.add("slide-in");
+    stateForm.classList.remove("sr-only");
+  }, 1000)
 }
 
-document.querySelector("#inputFile")
+document.querySelector("#inputUpscaleFile")
   .addEventListener("change", e => {
-
     const filepath = e.target.value
     const arrFilePath = filepath.split(/(\\|\/)/g);
     let filename = arrFilePath[arrFilePath.length - 1];
@@ -179,8 +142,151 @@ document.querySelector("#inputFile")
     }
 
 
-    const p = document.querySelector("#customFileInput p");
+    const p = document.querySelector("#inputUpscaleFile .customFileInput p");
 
     p.innerHTML = filename;
 
+    const figure = document.querySelector("#upscaleContainer figure");
+
+    const input = document.querySelector("#inputUpscaleFile");
+    const file = input['files'][0]
+    let reader = new FileReader();
+
+
+    reader.onload = async function (e) {
+      const img = new Image();
+
+      img.onload = function () {
+        figure.width = img.width;
+        figure.height = img.height;
+
+        makeFigureResponsive(img);
+
+      };
+
+      // Set the source of the image to the uploaded file
+      img.src = e.target.result;
+
+    }
+
+    reader.readAsDataURL(file);
   })
+
+function makeFigureResponsive(img) {
+  const elementImage = document.querySelector("#upscaleContainer figure img");
+
+  const container = document.querySelector("#upscaleContainer figure");
+  const containerWidth = container.offsetWidth;
+  const containerHeight = container.offsetHeight;
+  const imgWidth = img.width;
+  const imgHeight = img.height;
+
+  const widthBigger = imgWidth > imgHeight;
+
+  // Calculate the aspect ratio of the original image
+  const aspectRatio = imgWidth / imgHeight;
+
+  // Adjust the img width and height based on the container size
+  if (widthBigger && containerWidth < imgWidth) {
+    img.style.width = (containerWidth - 20) + "px";
+    img.style.height = ((containerWidth / aspectRatio) - 20) + "px";
+  } else if (!widthBigger && containerHeight < imgHeight) {
+    img.style.height = (containerHeight - 20) + "px";
+    img.style.width = ((containerHeight * aspectRatio) - 20) + "px";
+  }
+
+  elementImage.style.width = img.style.width;
+  elementImage.style.height = img.style.height;
+
+  elementImage.src = img.src;
+
+}
+
+
+document.querySelector("#inputEditorFile")
+  .addEventListener("change", e => {
+    const filepath = e.target.value
+    const arrFilePath = filepath.split(/(\\|\/)/g);
+    let filename = arrFilePath[arrFilePath.length - 1];
+
+    if (filename.length > 30) {
+      const arrFile = filename.split(".")
+      let name = arrFile[0]
+      let mime = arrFile[1]
+
+      name = name.slice(0, 30) + '[...]';
+
+      filename = name + '.' + mime
+    }
+
+
+    const p = document.querySelector("#editorContainer .customFileInput p");
+
+    p.innerHTML = filename;
+
+    const canvas = document.querySelector("#editorContainer #canvas-wrapper canvas");
+
+    const input = document.querySelector("#inputEditorFile");
+    const file = input['files'][0]
+    let reader = new FileReader();
+
+
+    reader.onload = async function (e) {
+      const img = new Image();
+
+      img.onload = function () {
+        //canvas.width = img.width;
+        //canvas.height = img.height;
+
+        makeCanvasResponsive(img);
+
+
+      };
+
+      // Set the source of the image to the uploaded file
+      img.src = e.target.result;
+
+    }
+
+    reader.readAsDataURL(file);
+  })
+
+function makeCanvasResponsive(img) {
+  const canvas = document.querySelector("#editorContainer #canvas-wrapper canvas");
+
+  const container = document.querySelector("#editorContainer .figure");
+  const containerWidth = container.offsetWidth;
+  const containerHeight = container.offsetHeight;
+  const imgWidth = img.width;
+  const imgHeight = img.height;
+
+  const widthBigger = imgWidth > imgHeight;
+
+  // Calculate the aspect ratio of the original image
+  const aspectRatio = imgWidth / imgHeight;
+
+  // Adjust the img width and height based on the container size
+  if (widthBigger && containerWidth < imgWidth) {
+    img.style.width = (containerWidth) + "px";
+    img.style.height = ((containerWidth / aspectRatio)) + "px";
+  } else if (!widthBigger && containerHeight < imgHeight) {
+    img.style.height = (containerHeight) + "px";
+    img.style.width = ((containerHeight * aspectRatio)) + "px";
+  }
+
+  canvas.style.width = img.style.width;
+  canvas.style.height = img.style.height
+
+  canvas.style.backgroundImage = `url(${img.src})`;
+  canvas.style.backgroundSize = 'cover'
+
+  const canvasOffsetX = canvas.offsetLeft;
+  const canvasOffsetY = canvas.offsetTop;
+
+  canvas.width = window.innerWidth - canvasOffsetX;
+  canvas.height = window.innerHeight - canvasOffsetY;
+}
+
+
+
+

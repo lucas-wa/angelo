@@ -1,0 +1,51 @@
+* {
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+  }
+  
+  body {
+    width:100%;
+    min-height:100vh;
+    background:#000;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    gap:20px;
+  }
+
+  .editorContainer {
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap:1rem;
+  }
+
+  .editorContainer .toolBar {
+    width:100%;
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  
+  button {
+    width: 100%;
+    cursor:pointer;
+    padding: .1rem;
+  }
+  
+
+  .canvas-wrapper {
+    position: relative;
+  }
+
+  canvas {
+    width:25vw;
+    height:25vw;
+    background: url("https://picsum.photos/500") no-repeat;
+    background-size:cover;
+    
+  }
