@@ -3,6 +3,8 @@ let formState = "generateContainer";
 document.querySelector("#generateForm")
   .addEventListener("submit", async e => {
 
+    e.preventDefault();
+
     const submitButton = document.querySelector("#generateForm button")
     submitButton.disable = true;
     submitButton.innerHTML = "<div class='lds-ring'><div></div><div></div><div></div><div></div></div>"
@@ -39,6 +41,7 @@ document.querySelector("#generateForm")
 document.querySelector("#upscaleForm")
   .addEventListener("submit", async e => {
 
+    e.preventDefault();
 
     try {
 
@@ -91,6 +94,64 @@ document.querySelector("#upscaleForm")
     }
   });
 
+document.querySelector("#editosForm")
+  .addEventListener("submit", async e => {
+    e.preventDefault();
+
+    try {
+      const input = document.querySelector("#inputEditorFile");
+      const file = input['files'][0]
+      let reader = new FileReader();
+
+      reader.readAsDataURL(file);
+
+      reader.onload = async function () {
+
+        const base64Image = reader.result.split(',')[1];
+
+        const submitButton = document.querySelector("#editorForm button")
+        submitButton.disable = true;
+        submitButton.innerHTML = "<div class='lds-ring'><div></div><div></div><div></div><div></div></div>";
+
+        const mask = document.querySelector('#canvas-wrapper canvas')
+        .toDataURL()
+        .split(',')[1];
+
+        const response = await fetch('/editor', {
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          method: 'POST',
+          body: JSON.stringify({
+            file: base64Image,
+            service: "editor",
+            mask
+          })
+        })
+
+        if (response.ok) {
+          const data = await response.json();
+
+          const virtualImg = new Image();
+
+          virtualImg.src = data.image_raw;
+
+          virtualImg.onload = () => {
+            makeCanvasResponsive(virtualImg)
+          }
+
+        }
+
+        submitButton.disable = false;
+        submitButton.innerHTML = "Enviar"
+
+      }
+
+    } catch (error) {
+      console.log(error)
+    }
+  })
+
 document.querySelectorAll("header nav ul li")
   .forEach(li => {
     console.log(li)
@@ -108,6 +169,21 @@ function handleFormState(prevState, state) {
   formState = state;
   const prevStateForm = document.querySelector(`#${prevState}`);
   const stateForm = document.querySelector(`#${state}`);
+
+  const img = document.querySelector(`#${prevState} .figure img`);
+  const p = document.querySelector(`#${prevState} .customFileInput p`);
+
+  if (img) {
+    img.src = "";
+  } else {
+    const canvas = document.querySelector("#canvas-wrapper canvas");
+    console.log(canvas)
+    canvas.style.backgroundImage = "none";
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+  }
+
+  if (p) p.innerHTML = 'Faça o upload da imagem'
 
   prevStateForm.classList.add("slide-out");
 
@@ -142,7 +218,7 @@ document.querySelector("#inputUpscaleFile")
     }
 
 
-    const p = document.querySelector("#inputUpscaleFile .customFileInput p");
+    const p = document.querySelector("#upscaleForm .customFileInput p");
 
     p.innerHTML = filename;
 
@@ -266,10 +342,10 @@ function makeCanvasResponsive(img) {
   const aspectRatio = imgWidth / imgHeight;
 
   // Adjust the img width and height based on the container size
-  if (widthBigger && containerWidth < imgWidth) {
+  if (widthBigger) {
     img.style.width = (containerWidth) + "px";
     img.style.height = ((containerWidth / aspectRatio)) + "px";
-  } else if (!widthBigger && containerHeight < imgHeight) {
+  } else {
     img.style.height = (containerHeight) + "px";
     img.style.width = ((containerHeight * aspectRatio)) + "px";
   }

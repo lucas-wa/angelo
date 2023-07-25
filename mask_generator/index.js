@@ -106,5 +106,6 @@ document.querySelector(".downloadButton")
         const a = document.createElement("a")
         a.download = "image.png"
         a.href = document.querySelector('canvas').toDataURL();
+        console.log(a.href)
         a.click()
     })

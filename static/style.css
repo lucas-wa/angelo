@@ -151,6 +151,12 @@ button:hover {}
   align-items: center;
 }
 
+.figure img{
+  width:100%;
+  border-radius:1rem;
+}
+
+
 .toolBar{
   display: flex;
   justify-content: space-between;
