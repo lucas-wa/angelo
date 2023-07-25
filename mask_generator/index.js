@@ -4,8 +4,10 @@ const ctx = canvas.getContext('2d');
 const canvasOffsetX = canvas.offsetLeft;
 const canvasOffsetY = canvas.offsetTop;
 
-canvas.width = window.innerWidth - canvasOffsetX;
-canvas.height = window.innerHeight - canvasOffsetY;
+console.log(canvasOffsetX, canvasOffsetY)
+
+canvas.width = "500";
+canvas.height = "500";
 
 let isPainting = false;
 let lineWidth = 20;
@@ -105,7 +107,9 @@ document.querySelector(".downloadButton")
         e.preventDefault();
         const a = document.createElement("a")
         a.download = "image.png"
-        a.href = document.querySelector('canvas').toDataURL();
+
+        a.href = canvas.toDataURL();
+
         console.log(a.href)
         a.click()
     })

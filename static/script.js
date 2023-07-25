@@ -94,7 +94,7 @@ document.querySelector("#upscaleForm")
     }
   });
 
-document.querySelector("#editosForm")
+document.querySelector("#editorForm")
   .addEventListener("submit", async e => {
     e.preventDefault();
 
@@ -117,6 +117,14 @@ document.querySelector("#editosForm")
         .toDataURL()
         .split(',')[1];
 
+        const a = document.createElement("a");
+        a.download = "maks.png"
+        a.href = document.querySelector('#canvas-wrapper canvas')
+        .toDataURL("image/png");
+        a.click()
+
+        const prompt = document.querySelector("#editorForm #inputPrompt").value;
+
         const response = await fetch('/editor', {
           headers: {
             'Content-Type': 'application/json'
@@ -125,7 +133,8 @@ document.querySelector("#editosForm")
           body: JSON.stringify({
             file: base64Image,
             service: "editor",
-            mask
+            mask,
+            prompt
           })
         })
 
@@ -336,6 +345,11 @@ function makeCanvasResponsive(img) {
   const imgWidth = img.width;
   const imgHeight = img.height;
 
+  console.log(imgHeight, imgWidth)
+
+  canvas.width = `${imgWidth}`;
+  canvas.height = `${imgHeight}`;
+
   const widthBigger = imgWidth > imgHeight;
 
   // Calculate the aspect ratio of the original image
@@ -355,12 +369,6 @@ function makeCanvasResponsive(img) {
 
   canvas.style.backgroundImage = `url(${img.src})`;
   canvas.style.backgroundSize = 'cover'
-
-  const canvasOffsetX = canvas.offsetLeft;
-  const canvasOffsetY = canvas.offsetTop;
-
-  canvas.width = window.innerWidth - canvasOffsetX;
-  canvas.height = window.innerHeight - canvasOffsetY;
 }
 
 
