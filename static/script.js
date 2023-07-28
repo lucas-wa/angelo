@@ -27,7 +27,7 @@ document.querySelector("#generateForm")
 
       if (response.ok) {
         const data = await response.json();
-        document.querySelector("img").src = data.image_raw;
+        document.querySelector("#generateContainer img").src = data.image_raw;
       }
 
     } catch (error) {
