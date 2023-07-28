@@ -367,5 +367,19 @@ function makeCanvasResponsive(img) {
 }
 
 
+function handleMenuState() {
+  const inputMenuState = document.querySelector("#input_menu_state");
+  const inputMenu = document.querySelector("#input_menu");
+  inputMenuState.checked = inputMenu.checked
 
+  const menuState = inputMenuState.checked;
+  const menu = document.querySelector(".navMenu");
+
+  if (menuState) {
+      menu.classList.add("appear");
+  } else {
+      menu.classList.remove("appear");
+
+  }
+}
 

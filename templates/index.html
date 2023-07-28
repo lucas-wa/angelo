@@ -5,7 +5,9 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flask Server</title>
+    <title>Angelo</title>
+
+    <link rel="shortcut icon" href="/assets/favicon.svg" type="image/x-icon">
 
     <link rel="stylesheet" href="../static/style.css">
 
@@ -18,13 +20,30 @@
     <div class="container">
 
         <header>
-            <nav>
+
+            <figure>
+                <img src="../assets/logo.png" alt="Logo da angelo">
+            </figure>
+
+            <input type="checkbox" name="input_menu_state" id="input_menu_state">
+
+            <nav class="navMenu">
                 <ul>
                     <li class="generateContainer">Gerador</li>
                     <li class="upscaleContainer">Upscale</li>
                     <li class="editorContainer">Editor</li>
                 </ul>
             </nav>
+
+            <label id="label-menu" htmlFor="menu">
+                <input type="checkbox" name="menu" id="input_menu" className="sr-only" onchange="handleMenuState()" />
+                <div id="nav-icon3">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </label>
         </header>
 
         <main>
@@ -109,8 +128,34 @@
                 </form>
             </div>
 
+        </main>
+
+        <footer>
+            <p>
+                Equipe
+            </p>
+
+            <ul>
+                <li>
+                    <a target="_blank" href="https://github.com/carlosedurochas">
+                        <img src="../assets/github.png" alt="github" style="width: 100%; max-width: 1.5rem;">
+
+                        <p>
+                            carlosedurochas
+                        </p>
+                    </a>
+                </li>
+                <li>
+                    <a target="_blank" href="https://github.com/lucas-wa">
+                        <img src="../assets/github.png" alt="github" style="width: 100%; max-width: 1.5rem;">
+                        <p>
+                            lucas-wa
+                        </p>
+                    </a>
+                </li>
+            </ul>
+        </footer>
     </div>
-    </main>
 
 
     <script src="../static/script.js" defer></script>
