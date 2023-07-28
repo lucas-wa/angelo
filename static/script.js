@@ -117,11 +117,6 @@ document.querySelector("#editorForm")
         .toDataURL()
         .split(',')[1];
 
-        const a = document.createElement("a");
-        a.download = "maks.png"
-        a.href = document.querySelector('#canvas-wrapper canvas')
-        .toDataURL("image/png");
-        a.click()
 
         const prompt = document.querySelector("#editorForm #inputPrompt").value;
 
