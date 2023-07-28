@@ -82,6 +82,22 @@ def upscale_image(image, imgname):
 
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
+    width = img.shape[1]
+    height = img.shape[0]
+    aspect_ratio = width/height;
+    width_is_bigger = width > height;
+
+
+    print(width, height, aspect_ratio)
+
+    if width_is_bigger and width > 500:
+      img = cv2.resize(img, (500, int(500 / aspect_ratio)))
+    elif not width_is_bigger and height > 500:
+      img = cv2.resize(img, (int(500 * aspect_ratio), 500))
+
+
+    print(img.shape)
+
     if len(img.shape) == 3 and img.shape[2] == 4:
         img_mode = 'RGBA'
     else:
