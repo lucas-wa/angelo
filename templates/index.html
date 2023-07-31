@@ -51,81 +51,90 @@
             <div id="generateContainer" class="formContainer">
                 <h1>Gerador de Imagens</h1>
 
-                <figure class="figure">
-                    <img />
-                </figure>
+                <div class="formArea">
+                    <figure class="figure">
+                        <img />
+                    </figure>
 
-                <form action="POST" id="generateForm">
+                    <form action="POST" id="generateForm">
 
-                    <input type="text" id="inputPrompt" placeholder="Digite a descrição da imagem">
+                        <input type="text" id="inputPrompt" placeholder="Digite a descrição da imagem">
 
-                    <button type="submit">
-                        Enviar
-                    </button>
-                </form>
+                        <button type="submit">
+                            Enviar
+                        </button>
+                    </form>
+                </div>
+
             </div>
 
             <div id="upscaleContainer" class="formContainer sr-only">
                 <h1>Upscale de Imagens</h1>
 
-                <figure class="figure">
-                    <img />
-                </figure>
+                <div class="formArea">
+                    <figure class="figure">
+                        <img />
+                    </figure>
 
-                <form action="POST" id="upscaleForm">
+                    <form action="POST" id="upscaleForm">
 
-                    <label for="inputUpscaleFile" class="customFileInput">
-                        <span class="material-symbols-outlined" style="font-size:5vw; color:#80808090;">
-                            upload
-                        </span>
-                        <p>
-                            Faça o upload da imagem
-                        </p>
-                    </label>
+                        <label for="inputUpscaleFile" class="customFileInput">
+                            <span class="material-symbols-outlined" style="font-size:5vw; color:#80808090;">
+                                upload
+                            </span>
+                            <p>
+                                Faça o upload da imagem
+                            </p>
+                        </label>
 
-                    <input type="file" id="inputUpscaleFile" name="inputFile" accept="image/png, image/jpeg"
-                        class="sr-only">
+                        <input type="file" id="inputUpscaleFile" name="inputFile" accept="image/png, image/jpeg"
+                            class="sr-only">
 
-                    <button type="submit">
-                        Enviar
-                    </button>
-                </form>
+                        <button type="submit">
+                            Enviar
+                        </button>
+                    </form>
+                </div>
+
             </div>
 
             <div id="editorContainer" class="formContainer sr-only">
                 <h1>Editor de Imagens</h1>
 
-                <div class="toolBar">
-                    <input type="range" id="rangeInput" min="10" max="40">
-                    <button id="clearButton">Limpar</button>
+                <div class="formArea">
+                    <div id="canvas-wrapper" class="figure">
+                        <canvas>
+
+                        </canvas>
+                    </div>
+
+                    <form action="POST" id="editorForm">
+
+                        <div class="toolBar">
+                            <input type="range" id="rangeInput" min="10" max="40">
+                            <button id="clearButton">Limpar</button>
+                        </div>
+
+                        <input type="text" id="inputPrompt"
+                            placeholder="Digite a descrição da edição da área selecionada">
+
+                        <label for="inputEditorFile" class="customFileInput">
+                            <span class="material-symbols-outlined" style="font-size:5vw; color:#80808090;">
+                                upload
+                            </span>
+                            <p>
+                                Faça o upload da imagem
+                            </p>
+                        </label>
+
+                        <input type="file" id="inputEditorFile" name="inputFile" accept="image/png, image/jpeg"
+                            class="sr-only">
+
+                        <button type="submit">
+                            Enviar
+                        </button>
+                    </form>
                 </div>
-
-                <div id="canvas-wrapper" class="figure">
-                    <canvas>
-
-                    </canvas>
-                </div>
-
-                <form action="POST" id="editorForm">
-
-                    <input type="text" id="inputPrompt" placeholder="Digite a descrição da edição da área selecionada">
-
-                    <label for="inputEditorFile" class="customFileInput">
-                        <span class="material-symbols-outlined" style="font-size:5vw; color:#80808090;">
-                            upload
-                        </span>
-                        <p>
-                            Faça o upload da imagem
-                        </p>
-                    </label>
-
-                    <input type="file" id="inputEditorFile" name="inputFile" accept="image/png, image/jpeg"
-                        class="sr-only">
-
-                    <button type="submit">
-                        Enviar
-                    </button>
-                </form>
             </div>
 
         </main>
