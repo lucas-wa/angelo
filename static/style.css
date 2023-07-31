@@ -228,6 +228,18 @@ button {
   width: 100%;
 }
 
+span#clearButton {
+  width: 100%;
+  display:block;
+  background: linear-gradient(90deg, #7159c1, #ff5ccc);
+  color:#fff;
+  text-align: center;
+  padding:1rem;
+  border-radius:.5rem;
+  font-size: 1rem;
+  cursor:pointer;
+}
+
 
 #inputPrompt,
 .customFileInput {
