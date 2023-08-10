@@ -26,8 +26,15 @@ document.querySelector("#generateForm")
       })
 
       if (response.ok) {
-        const data = await response.json();
-        document.querySelector("#generateContainer img").src = data.image_raw;
+          const data = await response.json();
+
+          const virtualImg = new Image();
+
+          virtualImg.src = data.image_raw;
+
+          virtualImg.onload = () => {
+            makeImageResponsive(virtualImg)
+          }
       }
 
     } catch (error) {
@@ -37,6 +44,37 @@ document.querySelector("#generateForm")
     submitButton.disable = false;
     submitButton.innerHTML = "Enviar"
   });
+
+
+function makeImageResponsive(img) {
+  const elementImage = document.querySelector("#generateContainer figure img");
+
+  const container = document.querySelector("#generateContainer figure");
+  const containerWidth = container.offsetWidth;
+  const containerHeight = container.offsetHeight;
+  const imgWidth = img.width;
+  const imgHeight = img.height;
+
+  const widthBigger = imgWidth > imgHeight;
+
+  // Calculate the aspect ratio of the original image
+  const aspectRatio = imgWidth / imgHeight;
+
+  // Adjust the img width and height based on the container size
+  if (widthBigger && containerWidth < imgWidth) {
+    img.style.width = (containerWidth - 20) + "px";
+    img.style.height = ((containerWidth / aspectRatio) - 20) + "px";
+  } else if (!widthBigger && containerHeight < imgHeight) {
+    img.style.height = (containerHeight - 20) + "px";
+    img.style.width = ((containerHeight * aspectRatio) - 20) + "px";
+  }
+
+  elementImage.style.width = img.style.width;
+  elementImage.style.height = img.style.height;
+
+  elementImage.src = img.src;
+
+}
 
 document.querySelector("#upscaleForm")
   .addEventListener("submit", async e => {
