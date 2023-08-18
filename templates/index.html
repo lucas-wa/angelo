@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Angelo</title>
+
+    <link rel="shortcut icon" href="/assets/favicon.svg" type="image/x-icon">
+
+    <link rel="stylesheet" href="../static/style.css">
+
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+</head>
+
+<body>
+
+    <div class="container">
+
+        <header>
+
+            <figure class="figure">
+                <img src="../static/assets/logo.png" alt="Logo da angelo">
+            </figure>
+
+            <input type="checkbox" name="input_menu_state" id="input_menu_state">
+
+            <nav class="navMenu">
+                <ul>
+                    <li class="generateContainer">Gerador</li>
+                    <li class="upscaleContainer">Upscale</li>
+                    <li class="editorContainer">Editor</li>
+                </ul>
+            </nav>
+
+            <label id="label-menu" htmlFor="menu">
+                <input type="checkbox" name="menu" id="input_menu" className="sr-only" onchange="handleMenuState()" />
+                <div id="nav-icon3">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </label>
+        </header>
+
+        <main>
+
+            <div id="generateContainer" class="formContainer">
+                <h1>Gerador de Imagens</h1>
+
+                <div class="formArea">
+                    <figure class="figure">
+                        <img />
+                    </figure>
+
+                    <form action="POST" id="generateForm">
+
+                        <input type="text" id="inputPrompt" placeholder="Digite a descrição da imagem">
+
+                        <button type="submit">
+                            Enviar
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+
+            <div id="upscaleContainer" class="formContainer sr-only">
+                <h1>Upscale de Imagens</h1>
+
+                <div class="formArea">
+                    <figure class="figure">
+                        <img />
+                    </figure>
+
+                    <form action="POST" id="upscaleForm">
+
+                        <label for="inputUpscaleFile" class="customFileInput">
+                            <span class="material-symbols-outlined" style="font-size:5vw; color:#80808090;">
+                                upload
+                            </span>
+                            <p>
+                                Faça o upload da imagem
+                            </p>
+                        </label>
+
+                        <input type="file" id="inputUpscaleFile" name="inputFile" accept="image/png, image/jpeg"
+                            class="sr-only">
+
+                        <button type="submit">
+                            Enviar
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+
+            <div id="editorContainer" class="formContainer sr-only">
+                <h1>Editor de Imagens</h1>
+
+                <div class="formArea">
+                    <div id="canvas-wrapper" class="figure">
+                        <canvas>
+
+                        </canvas>
+                    </div>
+
+                    <form action="POST" id="editorForm">
+
+                        <div class="toolBar">
+                            <input type="range" id="rangeInput" min="10" max="40">
+                            <span id="clearButton">Limpar</span>
+                        </div>
+
+                        <input type="text" id="inputPrompt"
+                            placeholder="Digite a descrição da edição da área selecionada">
+
+                        <label for="inputEditorFile" class="customFileInput">
+                            <span class="material-symbols-outlined" style="font-size:5vw; color:#80808090;">
+                                upload
+                            </span>
+                            <p>
+                                Faça o upload da imagem
+                            </p>
+                        </label>
+
+                        <input type="file" id="inputEditorFile" name="inputFile" accept="image/png, image/jpeg"
+                            class="sr-only">
+
+                        <button type="submit">
+                            Enviar
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+        </main>
+
+        <footer>
+            <p>
+                Equipe
+            </p>
+
+            <ul>
+                <li>
+                    <a target="_blank" href="https://github.com/carlosedurochas">
+                        <img src="../static/assets/github.png" alt="github" style="width: 100%; max-width: 1.5rem;">
+
+                        <p>
+                            carlosedurochas
+                        </p>
+                    </a>
+                </li>
+                <li>
+                    <a target="_blank" href="https://github.com/lucas-wa">
+                        <img src="../static/assets/github.png" alt="github" style="width: 100%; max-width: 1.5rem;">
+                        <p>
+                            lucas-wa
+                        </p>
+                    </a>
+                </li>
+            </ul>
+        </footer>
+    </div>
+
+
+    <script src="../static/script.js" defer></script>
+    <script src="../static/toolBar.js" defer></script>
+
+</body>
+
+</html>
