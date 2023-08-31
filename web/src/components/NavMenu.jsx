@@ -54,7 +54,7 @@ export default function NavMenu() {
   },[])
 
   return (
-    <nav className='relative'>
+    <nav className='relative z-10'>
 
       <div className='md:sr-only w-10 h-10 flex flex-col justify-center align-center gap-2 cursor-pointer' onClick={handleMenuState}>
         <span className='w-full h-px block bg-white rounded-md'></span>
@@ -64,7 +64,7 @@ export default function NavMenu() {
 
       {
         menuState &&
-        <ul ref={menuRef} className="ring-white ring-1 p-5 rounded-md absolute right-0 animate-appear md:flex md:relative md:gap-5 md:ring-0 md:ring-transparent md:flex-row">
+        <ul ref={menuRef} className="ring-white ring-1 p-5 backdrop-blur rounded-md absolute right-0 animate-appear md:flex md:relative md:gap-5 md:ring-0 md:ring-transparent md:flex-row">
           {
             menuItems.map(({ key, anchor, item, icon }) =>
               <li className="py-1 w-full"  key={key} >
