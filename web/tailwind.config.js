@@ -8,17 +8,30 @@ export default {
     extend: {
 
       animation: {
-        'appear': 'wiggle .5s ease',
+        'appear': 'slideup .5s ease',
+        'slide-left': 'slideleft .5s ease'
       },
 
       keyframes: {
-        wiggle: {
+        slideup: {
           '0%': {
             transform: 'translateY(10px)',
             opacity: '0'
           },
           '100%': {
             transform: 'translateY(0)',
+            opacity: '1'
+          },
+
+        },
+
+        slideleft: {
+          '0%': {
+            transform: 'translateX(-50px)',
+            opacity: '0'
+          },
+          '100%': {
+            transform: 'translateX(0)',
             opacity: '1'
           },
 
