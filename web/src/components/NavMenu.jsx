@@ -37,9 +37,20 @@ export default function NavMenu() {
   }
 
   useEffect(() => {
+
+
+    function updateSize(){
+      windowWidth.current = window.innerWidth;
+      setMenuState(windowWidth.current > 768)
+    }
+
     if(windowWidth.current > 768) {
       menuRef.current.classList.remove("animate-appear")
     }
+
+    window.addEventListener('resize', updateSize)
+
+    return () => window.removeEventListener('resize', updateSize)
   },[])
 
   return (
@@ -53,11 +64,11 @@ export default function NavMenu() {
 
       {
         menuState &&
-        <ul ref={menuRef} className="ring-white ring-1 p-5 border rounded-md absolute right-0 animate-appear md:border-transparent md:flex-row">
+        <ul ref={menuRef} className="ring-white ring-1 p-5 rounded-md absolute right-0 animate-appear md:flex md:relative md:gap-5 md:ring-0 md:ring-transparent md:flex-row">
           {
             menuItems.map(({ key, anchor, item, icon }) =>
-              <li className="py-1 w-full">
-                <a href={anchor} key={key} onClick={e => e.preventDefault()}
+              <li className="py-1 w-full"  key={key} >
+                <a href={anchor} onClick={e => e.preventDefault()}
                   className="flex justify-start items-center gap-2 brightness-75 hover:brightness-100 transition-all">
                   {icon}
                   {item}
