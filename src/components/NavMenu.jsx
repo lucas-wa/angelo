@@ -1,6 +1,8 @@
 import { PiPencilSimpleLight, PiRulerFill } from 'react-icons/pi';
 import { MdOutlineImagesearchRoller } from 'react-icons/md';
 import { useEffect, useRef, useState } from 'react';
+import { userSignOut } from '@/lib/firebase';
+import { ArrowDownLeft } from 'lucide-react';
 
 
 
@@ -83,6 +85,17 @@ export default function NavMenu({ setService }) {
               </li>
             )
           }
+
+          <li className="py-1 w-full cursor-pointer">
+            <a className="flex justify-start items-center gap-2 brightness-75 hover:brightness-100 transition-all"
+            onClick={e => {
+              e.preventDefault();
+              userSignOut();
+            }}>
+              <ArrowDownLeft/>
+              Sair
+            </a>
+          </li>
         </ul>
       }
 
