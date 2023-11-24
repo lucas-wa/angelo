@@ -1,17 +1,14 @@
-import argparse
+import os
 import cv2
 import glob
-import os
 import requests
-from basicsr.archs.rrdbnet_arch import RRDBNet
-from basicsr.utils.download_util import load_file_from_url
-
-from realesrgan import RealESRGANer
-from realesrgan.archs.srvgg_arch import SRVGGNetCompact
+import argparse
 import numpy as np
-
 from gfpgan import GFPGANer
-
+from realesrgan import RealESRGANer
+from basicsr.archs.rrdbnet_arch import RRDBNet
+from realesrgan.archs.srvgg_arch import SRVGGNetCompact
+from basicsr.utils.download_util import load_file_from_url
 
 OUTSCALE = 4
 IMG_SUFFIX = 'upscaled'
@@ -111,7 +108,7 @@ def upscale_image(image, imgname):
         else:
             print("Is not face")
             output, _ = upsampler.enhance(img, outscale=OUTSCALE)
-    except RuntimeError as error:
+    except RuntimeError a error:
         print('Error', error)
         print(
             'If you encounter CUDA out of memory, try to set --tile with a smaller number.')
@@ -126,4 +123,4 @@ def upscale_image(image, imgname):
             'results', f'{imgname}_{IMG_SUFFIX}.{extension}')
         cv2.imwrite(save_path, output)
 
-        return output
+        return outputs
