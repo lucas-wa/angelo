@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import { generateImage, getImage } from "../lib/leap";
 import { Loader2 } from "lucide-react";
 import { Download } from "lucide-react";
+import { api } from "@/lib/axios";
 
 export function GeneratorMain() {
 
@@ -17,20 +18,20 @@ export function GeneratorMain() {
 
         const prompt = inputRef.current.value;
 
-        const inferenceId = await generateImage(prompt);
+        const response = await api.post("/generator", { prompt: prompt });
 
-        const getImageInterval = setInterval(async () => {
+        if (response.status === 200) {
+            setImageUri(response.data.image_raw);
+        }
+        
+        setLoading(false);
+    }
 
-            const uri = await getImage(inferenceId);
-
-            if (uri) {
-                clearInterval(getImageInterval);
-                setImageUri(uri);
-                setLoading(false);
-            }
-
-        }, 1000)
-
+    function downloadImage(uri) {
+        const a = document.createElement('a');
+        a.href = uri;
+        a.download = 'image.png';
+        a.click();
     }
 
     return (
@@ -40,7 +41,9 @@ export function GeneratorMain() {
 
                 {
                     imageUri &&
-                    <div className="w-full h-full flex justify-center items-center p-3 text-center rounded bg-indigo-500 brightness-90 hover:brightness-100 transition-all">
+                    <div 
+                    onClick={e => downloadImage(imageUri)}
+                    className="w-full h-full cursor-pointer flex justify-center items-center p-3 text-center rounded bg-indigo-500 brightness-90 hover:brightness-100 transition-all">
                         <Download className="mr-2"></Download>
                         <span>Baixar imagem</span>
                     </div>

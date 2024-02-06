@@ -1,77 +1,116 @@
-import { useRef } from 'react';
-import { CustomInputFile } from './CustomInputFile';
-
+import { useRef, useState } from "react";
+import { CustomInputFile } from "./CustomInputFile";
+import { Loader2 } from "lucide-react";
+import { api } from "@/lib/axios";
 
 export function UpscaleMain() {
+  const [loading, setLoading] = useState(false);
+  const imgRef = useRef();
+  const [hasImage, setHasImage] = useState(false);
+  const imgContainer = useRef();
 
-    const imgRef = useRef();
-    const imgContainer = useRef();
+  function handleImage(base64Img) {
+    const virtualImg = new Image();
 
-    function handleImage(base64Img) {
+    virtualImg.onload = function () {
+      const [width, height] = makeImgResponsive(virtualImg);
 
-        const virtualImg = new Image();
+      imgRef.current.classList.remove("hidden");
 
-        virtualImg.onload = function () {
-            const [width, height] = makeImgResponsive(virtualImg);
+      imgRef.current.src = virtualImg.src;
 
-            imgRef.current.classList.remove("hidden")
+      imgRef.current.width = width;
+      imgRef.current.height = height;
 
-            imgRef.current.src = virtualImg.src;
+      setHasImage(true);
+    };
 
-            imgRef.current.width = width;
-            imgRef.current.height = height;
-            
-        }
+    virtualImg.src = base64Img;
+  }
 
-        virtualImg.src = base64Img
+  function makeImgResponsive(virtualImg) {
+    let width, height;
 
+    const virtualWidth = virtualImg.width;
+    const virtualHeight = virtualImg.height;
+
+    const aspectRatio = virtualWidth / virtualHeight;
+
+    const widthIsBigger = virtualWidth > virtualHeight;
+
+    console.log(
+      imgContainer.current.offsetWidth,
+      typeof imgContainer.current.style.width
+    );
+
+    if (widthIsBigger) {
+      width = imgContainer.current.offsetWidth - 20;
+      height = width / aspectRatio;
+    } else {
+      height = imgContainer.current.offsetHeight - 20;
+      width = height * aspectRatio;
     }
 
-    function makeImgResponsive(virtualImg) {
+    return [width, height];
+  }
 
-        let width, height;
+  async function handlePromptSubmit(e) {
+    e.preventDefault();
 
-        const virtualWidth = virtualImg.width;
-        const virtualHeight = virtualImg.height;
+    setLoading(true);
 
-        const aspectRatio = virtualWidth / virtualHeight;
+    const img = imgRef.current.src.split(",")[1];
 
-        const widthIsBigger = virtualWidth > virtualHeight;
+    const response = await api.post("/upscale", {
+      file: img,
+      service: "upscale",
+    });
 
-        console.log(imgContainer.current.offsetWidth, typeof imgContainer.current.style.width)
-
-        if (widthIsBigger) {
-            width = imgContainer.current.offsetWidth - 20
-            height = width / aspectRatio
-        }
-        else {
-            height = imgContainer.current.offsetHeight - 20;
-            width = height * aspectRatio;
-        }
-
-        return [width, height]
+    if (response.status === 200) {
+      handleImage(response.data.image_raw);
     }
 
-    return (
-        <div key={2} className="w-full h-auto flex flex-grow gap-10 py-10 px-16 items-center justify-center flex-col-reverse md:flex-row animate-slide-left">
-            <form action="" className="w-full flex-1 items-center justify-center flex flex-col gap-5">
+    setLoading(false);
+  }
 
-                <CustomInputFile handleImage={handleImage} imgRef={imgRef}>
-                </CustomInputFile>
+  return (
+    <div
+      key={2}
+      className="w-full h-auto flex flex-grow gap-10 py-10 px-16 items-center justify-center flex-col-reverse md:flex-row animate-slide-left"
+    >
+      <form
+        onSubmit={(e) => handlePromptSubmit(e)}
+        action=""
+        className="w-full flex-1 items-center justify-center flex flex-col gap-5"
+      >
+        <CustomInputFile
+          handleImage={handleImage}
+          imgRef={imgRef}
+        ></CustomInputFile>
 
-                <button className="w-full h-full p-3 text-center rounded bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 brightness-90 hover:brightness-100 transition-all">
-                    Enviar
-                </button>
-            </form>
+        <button
+          disabled={loading || !hasImage}
+          className="w-full h-full p-3 text-center rounded bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 brightness-90 hover:brightness-100 transition-all"
+        >
+          {loading ? (
+            <Loader2 className="w-full aspect-square animate-spin m-auto" />
+          ) : (
+            "Enviar"
+          )}
+        </button>
+      </form>
 
-            <div ref={imgContainer} className="w-full h-auto flex justify-center items-center bg-white/30 backdrop-blur rounded flex-1 aspect-square ring-1 ring-white">
-                <img
-                    src=""
-                    alt="Imagem do upload"
-                    className="hidden rounded"
-                    ref={imgRef}
-                />
-            </div>
-        </div>
-    )
+      <div
+        ref={imgContainer}
+        className="w-full h-auto flex justify-center items-center bg-white/30 backdrop-blur rounded flex-1 aspect-square ring-1 ring-white"
+      >
+        <img
+          src=""
+          alt="Imagem do upload"
+          className="hidden rounded"
+          ref={imgRef}
+        />
+      </div>
+    </div>
+  );
 }

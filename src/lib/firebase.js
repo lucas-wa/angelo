@@ -47,8 +47,8 @@ export const saveUserImage = async (imageUri) => {
   const userUid = auth.currentUser.uid;
 
   console.log(userUid, imageUri)
-
-  await set(ref(database, "users/" + userUid, "images"), {
+  
+  await set(ref(database, "users/" + userUid, "images/"), {
     imageUri
   })
 

@@ -1,97 +1,147 @@
 import { useRef, useState } from "react";
 import { CustomInputFile } from "./CustomInputFile";
 import CanvasDraw from "react-canvas-draw";
+import { api } from "@/lib/axios";
+import { Loader2 } from "lucide-react";
 
 export function EditorMain() {
+    const [loading, setLoading] = useState(false);
+  const inputRef = useRef();
+  const canvasRef = useRef();
+  const canvasContainer = useRef();
 
-    const canvasRef = useRef();
-    const canvasContainer = useRef();
+  const [hasImage, setHasImage] = useState(false);
+  const [canvasWidth, setCanvasWidth] = useState(0);
+  const [canvasHeight, setCanvasHeight] = useState(0);
+  const [canvasSrc, setCanvasSrc] = useState("");
 
-    const [hasImage, setHasImage] = useState(false);
-    const [canvasWidth, setCanvasWidth] = useState(0);
-    const [canvasHeight, setCanvasHeight] = useState(0);
-    const [canvasSrc, setCanvasSrc] = useState("");
+  function handleImage(base64Img) {
+    const virtualImg = new Image();
 
-    function handleImage(base64Img) {
+    virtualImg.onload = function () {
+      const [width, height] = makeImgResponsive(virtualImg);
 
-        const virtualImg = new Image();
+      // canvasRef.current.classList.remove("hidden")
 
-        virtualImg.onload = function () {
-            const [width, height] = makeImgResponsive(virtualImg);
+      // canvasRef.current.style.backgroundImage = `url(${virtualImg.src})`;
 
-            // canvasRef.current.classList.remove("hidden")
+      // canvasRef.current.style.backgroundSize = 'cover';
 
-            // canvasRef.current.style.backgroundImage = `url(${virtualImg.src})`;
+      // canvasRef.current.style.width = width + "px";
+      // canvasRef.current.style.height = height + "px";
 
-            // canvasRef.current.style.backgroundSize = 'cover';
+      setCanvasHeight(height);
+      setCanvasWidth(width);
+      setHasImage(true);
 
-            // canvasRef.current.style.width = width + "px";
-            // canvasRef.current.style.height = height + "px";
+      setCanvasSrc(`${virtualImg.src}`);
+    };
 
-            setCanvasHeight(height);
-            setCanvasWidth(width);
-            setHasImage(true);
+    virtualImg.src = base64Img;
+  }
 
-            setCanvasSrc(`${virtualImg.src}`);
-        }
+  function makeImgResponsive(virtualImg) {
+    let width, height;
 
-        virtualImg.src = base64Img
+    const virtualWidth = virtualImg.width;
+    const virtualHeight = virtualImg.height;
 
+    const aspectRatio = virtualWidth / virtualHeight;
+
+    const widthIsBigger = virtualWidth > virtualHeight;
+
+    console.log(
+      canvasContainer.current.offsetWidth,
+      typeof canvasContainer.current.style.width
+    );
+
+    if (widthIsBigger) {
+      width = canvasContainer.current.offsetWidth - 20;
+      height = width / aspectRatio;
+    } else {
+      height = canvasContainer.current.offsetHeight - 20;
+      width = height * aspectRatio;
     }
 
-    function makeImgResponsive(virtualImg) {
+    return [width, height];
+  }
 
-        let width, height;
+  async function handlePromptSubmit(e) {
+    e.preventDefault();
 
-        const virtualWidth = virtualImg.width;
-        const virtualHeight = virtualImg.height;
+    setLoading(true);
 
-        const aspectRatio = virtualWidth / virtualHeight;
+    const prompt = inputRef.current.value;
+    const canvas = canvasRef.current;
 
-        const widthIsBigger = virtualWidth > virtualHeight;
+    const mask = canvas.canvas.drawing.toDataURL().split(",")[1];
+    const img = canvasSrc.split(",")[1];
 
-        console.log(canvasContainer.current.offsetWidth, typeof canvasContainer.current.style.width)
+    const response = await api.post("/editor", {
+      prompt,
+      mask,
+      file: img,
+      service: "editor",
+    });
 
-        if (widthIsBigger) {
-            width = canvasContainer.current.offsetWidth - 20
-            height = width / aspectRatio
-        }
-        else {
-            height = canvasContainer.current.offsetHeight - 20;
-            width = height * aspectRatio;
-        }
-
-        return [width, height]
+    if (response.status === 200) {
+      // Clear canvas
+      canvas.clear();
+      handleImage(response.data.image_raw);
     }
 
-    return (
-        <div key={3} className="w-full h-auto flex flex-grow gap-10 py-10 px-16 items-center justify-center flex-col-reverse md:flex-row animate-slide-left">
-            <form action="" className="w-full flex-1 items-center justify-center flex flex-col gap-5">
+    setLoading(false);
+  }
 
+  return (
+    <div
+      key={3}
+      className="w-full h-auto flex flex-grow gap-10 py-10 px-16 items-center justify-center flex-col-reverse md:flex-row animate-slide-left"
+    >
+      <form
+        onSubmit={async (e) => await handlePromptSubmit(e)}
+        action=""
+        className="w-full flex-1 items-center justify-center flex flex-col gap-5"
+      >
+        <CustomInputFile handleImage={handleImage}></CustomInputFile>
 
-                <CustomInputFile handleImage={handleImage}></CustomInputFile>
+        <input
+          ref={inputRef}
+          type="text"
+          placeholder="Digite o prompt da edição"
+          className="w-full p-3 bg-white/30 backdrop-blur rounded outline-none placeholder-white/50 text-white focus:pl-4 transition-all ring-1 ring-white"
+        />
 
-                <input type="text" placeholder="Digite o prompt da edição" className="w-full p-3 bg-white/30 backdrop-blur rounded outline-none placeholder-white/50 text-white focus:pl-4 transition-all ring-1 ring-white" />
+        <button
+          disabled={loading}
+          className="w-full h-full p-3 text-center rounded bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 brightness-90 hover:brightness-100 transition-all"
+        >
+          {loading ? (
+            <Loader2 className="w-full aspect-square animate-spin m-auto" />
+          ) : (
+            "Enviar"
+          )}
+        </button>
+      </form>
 
-                <button className="w-full h-full p-3 text-center rounded bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 brightness-90 hover:brightness-100 transition-all">
-                    Enviar
-                </button>
-            </form>
+      <div
+        ref={canvasContainer}
+        className="flex justify-center items-center w-full h-auto bg-white/30 backdrop-blur rounded flex-1 aspect-square ring-1 ring-white"
+      >
+        {/* <canvas ref={canvasRef} className="hidden"></canvas> */}
 
-            <div ref={canvasContainer} className="flex justify-center items-center w-full h-auto bg-white/30 backdrop-blur rounded flex-1 aspect-square ring-1 ring-white">
-                {/* <canvas ref={canvasRef} className="hidden"></canvas> */}
-
-                {
-                    hasImage &&
-                    <CanvasDraw
-                        hideGrid={true}
-                        catenaryColor={"#000"}
-                        imgSrc={canvasSrc}
-                        canvasHeight={canvasHeight}
-                        canvasWidth={canvasWidth}
-                        brushColor={"#000"}
-                    ></CanvasDraw>}
-            </div>
-        </div>
-    )
+        {hasImage && (
+          <CanvasDraw
+            ref={canvasRef}
+            hideGrid={true}
+            catenaryColor={"#000"}
+            imgSrc={canvasSrc}
+            canvasHeight={canvasHeight}
+            canvasWidth={canvasWidth}
+            brushColor={"#000"}
+          ></CanvasDraw>
+        )}
+      </div>
+    </div>
+  );
 }
