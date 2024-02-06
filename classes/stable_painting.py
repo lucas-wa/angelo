@@ -11,17 +11,15 @@ editor_pipe = StableDiffusionInpaintPipeline.from_pretrained(
 editor_pipe.to("cuda")
 
 class StablePainting:
-    def _init_(self, caminho, prompt, mascara, imagem_entrada):
+    def __init__(self, caminho, prompt):
         self.caminho = caminho
         self.prompt = prompt
-        self.mascara = mascara
-        self.imagem_entrada = imagem_entrada
 
-    def editar_imagem(self, req, response_queue, status_code):
+    def editar_imagem(self, req):
           
         try:
             file = req['file']
-            prompt = req["prompt"]
+            prompt = self.prompt
             mask = req["mask"]
 
             file = base64.b64decode(file)
@@ -42,7 +40,7 @@ class StablePainting:
             image.save(buffered, format="PNG")
             img_str = base64.b64encode(buffered.getvalue())
             response = "data:image/png;base64," + str(img_str)[2:-1]
-            response_queue.put((response, status_code))
+            return response
 
         
         except Exception as e:

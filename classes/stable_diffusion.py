@@ -7,7 +7,7 @@ pipe = StableDiffusionPipeline.from_pretrained("CompVis/stable-diffusion-v1-4", 
 pipe = pipe.to("cuda")
 
 class StableDiffusion:
-    def _init_(self, caminho, prompt):
+    def __init__(self, caminho, prompt):
         self.caminho = caminho
         self.prompt = prompt
 

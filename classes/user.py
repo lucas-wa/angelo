@@ -10,11 +10,11 @@ class Usuario:
 
     def editar_perfil(self, nome=None, email=None, senha=None):
         if nome:
-            self.nome = nome
+            self.set_nome(nome)
         if email:
-            self.email = email
+            self.set_email(email)
         if senha:
-            self.senha = senha
+            self.set_senha(senha)
 
     def deletar_conta(self):
         pass

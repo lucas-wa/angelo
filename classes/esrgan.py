@@ -48,11 +48,10 @@ face_enhancer = GFPGANer(
     bg_upsampler=upsampler)
 
 class ESRGAN:
-    def _init_(self, caminho, imagem_entrada):
+    def __init__(self, caminho):
         self.caminho = caminho
-        self.imagem_entrada = imagem_entrada
 
-    def detectar_face(self):
+    def detectar_face(self, image):
         face_cascade = cv2.CascadeClassifier()
         face_cascade_name = "weights/haarcascade_frontalface_alt.xml"
 
@@ -74,7 +73,7 @@ class ESRGAN:
 
         return len(faces) > 0
 
-    def upscale_imagem(self, image):
+    def upscale_imagem(self, image, imgname):
             npimg = np.fromstring(image, np.uint8)
 
             img = cv2.imdecode(npimg, cv2.IMREAD_UNCHANGED)
@@ -115,9 +114,10 @@ class ESRGAN:
                 print(
                     'If you encounter CUDA out of memory, try to set --tile with a smaller number.')
             else:
-                extension = imgname.split('.')[1]
-                imgname = imgname.split('.')[0]
-
+                # imgname = imgname.split('.')[0]
+                # extension = imgname.split('.')[1]
+                imgname = "image"
+                extension = "png"
                 if img_mode == 'RGBA':  # RGBA images should be saved in png format
                     extension = 'png'
 
@@ -125,4 +125,4 @@ class ESRGAN:
                     'results', f'{imgname}_{IMG_SUFFIX}.{extension}')
                 cv2.imwrite(save_path, output)
 
-                return outputs
+                return output
