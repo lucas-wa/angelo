@@ -108,7 +108,7 @@ def upscale_image(image, imgname):
         else:
             print("Is not face")
             output, _ = upsampler.enhance(img, outscale=OUTSCALE)
-    except RuntimeError a error:
+    except RuntimeError as error:
         print('Error', error)
         print(
             'If you encounter CUDA out of memory, try to set --tile with a smaller number.')
